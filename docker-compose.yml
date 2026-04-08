@@ -1,0 +1,49 @@
+services:
+  # Redis for BullMQ queue
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API + Reconciliation Engine + Notification Worker
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=${MONGO_URI:-mongodb+srv://rahulsannamath29_db_user:j1XVQSOSenaFBBkt@cluster0.p83mb5y.mongodb.net/cleverbooks?retryWrites=true&w=majority}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PORT=5000
+      - NODE_ENV=production
+      - RECONCILIATION_CRON=0 2 * * *
+      - RECONCILIATION_TZ=Asia/Kolkata
+      - WEBHOOK_URL=${WEBHOOK_URL:-https://eowfw1pta25ghwn.m.pipedream.net}
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # Frontend React Dashboard
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  redis_data:
