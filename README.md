@@ -282,6 +282,22 @@ cleverbooks/
 
 ---
 
+## 📸 Screenshots
+
+### Dashboard
+![Dashboard](./cleverbookss/ss1.png)
+
+### Upload Settlements
+![Upload](./cleverbookss/ss2.png)
+
+### Settlements Table & Discrepancies
+![Settlements](./cleverbookss/ss3.png)
+
+### Notifications & Job Logs
+![Notifications](./cleverbookss/ss4.png)
+
+---
+
 ## 🎬 Loom Video
 
 [Insert Loom link here]
