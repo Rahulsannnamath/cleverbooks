@@ -34,10 +34,12 @@ class ApiClient {
     });
   }
 
-  async uploadSettlementsJSON(records, batchId) {
+  async uploadSettlementsJSON(records, batchId, orders) {
+    const body = { records, batchId };
+    if (orders && orders.length > 0) body.orders = orders;
     return this.request('/settlements/upload', {
       method: 'POST',
-      body: JSON.stringify({ records, batchId }),
+      body: JSON.stringify(body),
     });
   }
 

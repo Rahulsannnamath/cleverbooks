@@ -33,14 +33,38 @@ export const uploadSettlements = async (req, res, next) => {
       records = parseCSV(csvText);
       batchId = batchId || `batch_${crypto.randomUUID()}`;
     } else if (contentType.includes('application/json')) {
-      // JSON body upload
+      // JSON body upload — supports both orders and settlements in one payload
       records = req.body.records || req.body.settlements || [];
       batchId = batchId || req.body.batchId || `batch_${crypto.randomUUID()}`;
+
+      // If orders are provided, upsert them first (the "merchant-expected" side)
+      const incomingOrders = req.body.orders || [];
+      if (Array.isArray(incomingOrders) && incomingOrders.length > 0) {
+        const orderOps = incomingOrders.map((o) => ({
+          updateOne: {
+            filter: { awbNumber: o.awbNumber },
+            update: {
+              $set: {
+                awbNumber: o.awbNumber,
+                merchantId: o.merchantId || 'MERCH_DEFAULT',
+                courierPartner: (o.courierPartner || 'unknown').toLowerCase(),
+                orderStatus: (o.orderStatus || 'DELIVERED').toUpperCase(),
+                codAmount: parseFloat(o.codAmount) || 0,
+                declaredWeight: parseFloat(o.declaredWeight) || 0,
+                orderDate: o.orderDate ? new Date(o.orderDate) : new Date(),
+                deliveryDate: o.deliveryDate ? new Date(o.deliveryDate) : null,
+              },
+            },
+            upsert: true,
+          },
+        }));
+        await Order.bulkWrite(orderOps);
+      }
 
       if (!Array.isArray(records) || records.length === 0) {
         return res.status(400).json({
           success: false,
-          error: 'No records provided. Send an array of settlement records.',
+          error: 'No settlement records provided. Send an array in "records" or "settlements".',
         });
       }
     } else {

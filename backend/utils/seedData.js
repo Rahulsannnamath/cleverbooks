@@ -10,7 +10,7 @@ dotenv.config();
 /**
  * Seed Data Generator
  * 
- * Generates 50+ mock orders and 1 settlement batch with intentional discrepancies
+ * Generates 55 mock orders and settlement batches with intentional discrepancies
  * covering all 5 detection rules for review/demo purposes.
  * 
  * Usage: node utils/seedData.js
@@ -54,7 +54,7 @@ function generateOrders() {
 
   for (let i = 1; i <= 55; i++) {
     const awb = generateAWB(i);
-    const isDelivered = i <= 40; // 40 delivered, 10 RTO, 3 in transit, 2 lost
+    const isDelivered = i <= 40;
     const isRTO = i > 40 && i <= 50;
     const isInTransit = i > 50 && i <= 53;
     const isLost = i > 53;
@@ -62,7 +62,6 @@ function generateOrders() {
     let orderStatus, deliveryDate;
     if (isDelivered) {
       orderStatus = 'DELIVERED';
-      // Mix of recent and older deliveries
       deliveryDate = daysAgo(randomInt(3, 30));
     } else if (isRTO) {
       orderStatus = 'RTO';
@@ -75,7 +74,7 @@ function generateOrders() {
       deliveryDate = null;
     }
 
-    const codAmount = i % 5 === 0 ? 0 : randomFloat(200, 5000); // Every 5th order is prepaid
+    const codAmount = i % 5 === 0 ? 0 : randomFloat(200, 5000);
 
     orders.push({
       awbNumber: awb,
@@ -99,10 +98,16 @@ function generateOrders() {
 function generateSettlements(orders) {
   const settlements = [];
   const batchId = 'BATCH_SEED_001';
+  const usedAwbs = new Set();
 
-  // Generate settlements for the first 45 orders
-  for (let i = 0; i < 45; i++) {
+  // Generate settlements for first 48 orders (skip RTO overlap region)
+  for (let i = 0; i < 48; i++) {
     const order = orders[i];
+
+    // Skip if AWB already used in this batch (safety)
+    if (usedAwbs.has(order.awbNumber)) continue;
+    usedAwbs.add(order.awbNumber);
+
     const settlement = {
       awbNumber: order.awbNumber,
       batchId,
@@ -110,7 +115,6 @@ function generateSettlements(orders) {
       forwardCharge: randomFloat(30, 200),
       rtoCharge: 0,
       codHandlingFee: order.codAmount > 0 ? randomFloat(5, 50) : 0,
-      // defaults — will be modified for discrepancies below
       settledCodAmount: order.codAmount,
       chargedWeight: order.declaredWeight,
     };
@@ -119,14 +123,11 @@ function generateSettlements(orders) {
 
     // Rule 1: COD Short-remittance (orders 1-5)
     if (i < 5 && order.codAmount > 0) {
-      // Remit significantly less than expected (beyond tolerance)
-      settlement.settledCodAmount = order.codAmount - randomFloat(50, 500);
-      if (settlement.settledCodAmount < 0) settlement.settledCodAmount = 0;
+      settlement.settledCodAmount = Math.max(0, order.codAmount - randomFloat(50, 500));
     }
 
     // Rule 2: Weight Dispute (orders 6-10)
     if (i >= 5 && i < 10) {
-      // Charge weight > 110% of declared
       settlement.chargedWeight = parseFloat((order.declaredWeight * randomFloat(1.15, 1.8)).toFixed(1));
     }
 
@@ -136,31 +137,19 @@ function generateSettlements(orders) {
     }
 
     // Rule 4: Overdue Remittance (orders 16-20)
-    // For these, we set a delivery date > 14 days ago and NO settlement date
     if (i >= 15 && i < 20 && order.orderStatus === 'DELIVERED') {
-      // Modify the order to have delivery date > 14 days ago
       orders[i].deliveryDate = daysAgo(randomInt(18, 30));
-      settlement.settlementDate = null; // No settlement date
+      settlement.settlementDate = null;
     }
 
-    // Rule 5: Duplicate Settlement — we'll add a duplicate for AWB00000001 in a second batch later
+    // For RTO orders (41-48), set appropriate RTO values
+    if (order.orderStatus === 'RTO') {
+      settlement.settledCodAmount = 0;
+      settlement.rtoCharge = randomFloat(50, 150);
+      settlement.codHandlingFee = 0;
+    }
 
     settlements.push(settlement);
-  }
-
-  // Add 3 more settlements for RTO orders (orders 41-43), with 0 COD
-  for (let i = 40; i < 43; i++) {
-    const order = orders[i];
-    settlements.push({
-      awbNumber: order.awbNumber,
-      batchId,
-      settledCodAmount: 0,
-      chargedWeight: order.declaredWeight,
-      forwardCharge: randomFloat(30, 100),
-      rtoCharge: randomFloat(50, 150), // Legitimate RTO charge for RTO orders
-      codHandlingFee: 0,
-      settlementDate: new Date(),
-    });
   }
 
   return settlements;
@@ -205,7 +194,7 @@ async function seedDatabase() {
     await mongoose.connect(process.env.MONGO_URI);
     console.log('✅ Connected to MongoDB');
 
-    // Clear existing data
+    // Clear existing data and drop indexes to avoid stale constraints
     console.log('🧹 Clearing existing data...');
     await Promise.all([
       Order.deleteMany({}),
@@ -213,6 +202,17 @@ async function seedDatabase() {
       Job.deleteMany({}),
       Notification.deleteMany({}),
     ]);
+
+    // Drop & recreate indexes to avoid stale constraints
+    try {
+      await Settlement.collection.dropIndexes();
+      await Order.collection.dropIndexes();
+    } catch (e) {
+      // Ignore if collection doesn't exist yet
+    }
+    await Settlement.syncIndexes();
+    await Order.syncIndexes();
+    console.log('✅ Collections cleared and indexes rebuilt');
 
     // Generate and insert orders
     console.log('📦 Generating 55 mock orders...');

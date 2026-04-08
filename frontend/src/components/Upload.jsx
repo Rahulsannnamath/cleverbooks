@@ -80,12 +80,16 @@ export default function Upload({ onUploadComplete }) {
 
     try {
       const data = JSON.parse(jsonInput);
+      // Support both flat array and structured { orders, records } format
       const records = Array.isArray(data) ? data : data.records || data.settlements || [];
       if (records.length === 0) {
-        toast.error('No records found in JSON');
+        toast.error('No settlement records found in JSON');
+        setUploading(false);
         return;
       }
-      const res = await api.uploadSettlementsJSON(records, batchId || undefined);
+      // If structured format, send orders too
+      const orders = Array.isArray(data) ? undefined : data.orders;
+      const res = await api.uploadSettlementsJSON(records, batchId || undefined, orders);
       setResult(res);
       toast.success(res.message || 'Upload successful!');
       if (onUploadComplete) onUploadComplete();
@@ -203,18 +207,31 @@ export default function Upload({ onUploadComplete }) {
               fontSize: '12px',
               resize: 'vertical',
             }}
-            placeholder={`Paste an array of settlement records, e.g.:
-[
-  {
-    "awbNumber": "AWB00000001",
-    "settledCodAmount": 450,
-    "chargedWeight": 1.5,
-    "forwardCharge": 85,
-    "rtoCharge": 0,
-    "codHandlingFee": 15,
-    "settlementDate": "2025-01-15"
-  }
-]`}
+            placeholder={`Paste JSON with orders (expected) + settlements (actual):
+{
+  "orders": [
+    {
+      "awbNumber": "AWB90000001",
+      "merchantId": "MERCH_001",
+      "courierPartner": "delhivery",
+      "orderStatus": "DELIVERED",
+      "codAmount": 1500,
+      "declaredWeight": 2.0,
+      "deliveryDate": "2025-03-20"
+    }
+  ],
+  "records": [
+    {
+      "awbNumber": "AWB90000001",
+      "settledCodAmount": 800,
+      "chargedWeight": 4.5,
+      "forwardCharge": 85,
+      "rtoCharge": 120,
+      "codHandlingFee": 15,
+      "settlementDate": "2025-04-08"
+    }
+  ]
+}`}
             value={jsonInput}
             onChange={(e) => setJsonInput(e.target.value)}
           />
