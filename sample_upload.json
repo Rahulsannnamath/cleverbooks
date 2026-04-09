@@ -1,0 +1,168 @@
+{
+  "batchId": "batch_demo_april_2026",
+  "orders": [
+    {
+      "awbNumber": "AWB001MATCHED",
+      "merchantId": "MERCH_CLEVERBOOKS",
+      "courierPartner": "delhivery",
+      "orderStatus": "DELIVERED",
+      "codAmount": 1500.00,
+      "declaredWeight": 2.0,
+      "orderDate": "2026-03-20T10:00:00Z",
+      "deliveryDate": "2026-03-23T14:00:00Z"
+    },
+    {
+      "awbNumber": "AWB002COD_SHORT",
+      "merchantId": "MERCH_CLEVERBOOKS",
+      "courierPartner": "shiprocket",
+      "orderStatus": "DELIVERED",
+      "codAmount": 2000.00,
+      "declaredWeight": 1.5,
+      "orderDate": "2026-03-21T09:30:00Z",
+      "deliveryDate": "2026-03-25T11:00:00Z"
+    },
+    {
+      "awbNumber": "AWB003WEIGHT_DISPUTE",
+      "merchantId": "MERCH_CLEVERBOOKS",
+      "courierPartner": "bluedart",
+      "orderStatus": "DELIVERED",
+      "codAmount": 800.00,
+      "declaredWeight": 1.0,
+      "orderDate": "2026-03-22T08:00:00Z",
+      "deliveryDate": "2026-03-26T10:30:00Z"
+    },
+    {
+      "awbNumber": "AWB004PHANTOM_RTO",
+      "merchantId": "MERCH_CLEVERBOOKS",
+      "courierPartner": "delhivery",
+      "orderStatus": "DELIVERED",
+      "codAmount": 1200.00,
+      "declaredWeight": 0.5,
+      "orderDate": "2026-03-19T12:00:00Z",
+      "deliveryDate": "2026-03-22T16:00:00Z"
+    },
+    {
+      "awbNumber": "AWB005OVERDUE",
+      "merchantId": "MERCH_CLEVERBOOKS",
+      "courierPartner": "ecom_express",
+      "orderStatus": "DELIVERED",
+      "codAmount": 3500.00,
+      "declaredWeight": 3.0,
+      "orderDate": "2026-02-10T07:00:00Z",
+      "deliveryDate": "2026-02-14T09:00:00Z"
+    },
+    {
+      "awbNumber": "AWB006PREPAID_MATCHED",
+      "merchantId": "MERCH_CLEVERBOOKS",
+      "courierPartner": "kwikship",
+      "orderStatus": "DELIVERED",
+      "codAmount": 0,
+      "declaredWeight": 0.75,
+      "orderDate": "2026-03-28T11:00:00Z",
+      "deliveryDate": "2026-03-30T13:00:00Z"
+    },
+    {
+      "awbNumber": "AWB007RTO_ORDER",
+      "merchantId": "MERCH_CLEVERBOOKS",
+      "courierPartner": "dtdc",
+      "orderStatus": "RTO",
+      "codAmount": 950.00,
+      "declaredWeight": 1.2,
+      "orderDate": "2026-03-18T14:00:00Z",
+      "deliveryDate": null
+    },
+    {
+      "awbNumber": "AWB008MULTIPLE_DISC",
+      "merchantId": "MERCH_CLEVERBOOKS",
+      "courierPartner": "shiprocket",
+      "orderStatus": "DELIVERED",
+      "codAmount": 5000.00,
+      "declaredWeight": 2.0,
+      "orderDate": "2026-03-15T10:00:00Z",
+      "deliveryDate": "2026-03-18T12:00:00Z"
+    }
+  ],
+  "settlements": [
+    {
+      "awbNumber": "AWB001MATCHED",
+      "settledCodAmount": 1500.00,
+      "chargedWeight": 2.0,
+      "forwardCharge": 65.00,
+      "rtoCharge": 0,
+      "codHandlingFee": 30.00,
+      "settlementDate": "2026-03-30T00:00:00Z"
+    },
+    {
+      "awbNumber": "AWB002COD_SHORT",
+      "settledCodAmount": 1800.00,
+      "chargedWeight": 1.5,
+      "forwardCharge": 55.00,
+      "rtoCharge": 0,
+      "codHandlingFee": 36.00,
+      "settlementDate": "2026-04-01T00:00:00Z"
+    },
+    {
+      "awbNumber": "AWB003WEIGHT_DISPUTE",
+      "settledCodAmount": 800.00,
+      "chargedWeight": 2.5,
+      "forwardCharge": 90.00,
+      "rtoCharge": 0,
+      "codHandlingFee": 16.00,
+      "settlementDate": "2026-04-02T00:00:00Z"
+    },
+    {
+      "awbNumber": "AWB004PHANTOM_RTO",
+      "settledCodAmount": 1200.00,
+      "chargedWeight": 0.5,
+      "forwardCharge": 45.00,
+      "rtoCharge": 75.00,
+      "codHandlingFee": 24.00,
+      "settlementDate": "2026-04-01T00:00:00Z"
+    },
+    {
+      "awbNumber": "AWB005OVERDUE",
+      "settledCodAmount": 3500.00,
+      "chargedWeight": 3.0,
+      "forwardCharge": 110.00,
+      "rtoCharge": 0,
+      "codHandlingFee": 70.00,
+      "settlementDate": null
+    },
+    {
+      "awbNumber": "AWB006PREPAID_MATCHED",
+      "settledCodAmount": 0,
+      "chargedWeight": 0.75,
+      "forwardCharge": 40.00,
+      "rtoCharge": 0,
+      "codHandlingFee": 0,
+      "settlementDate": "2026-04-03T00:00:00Z"
+    },
+    {
+      "awbNumber": "AWB007RTO_ORDER",
+      "settledCodAmount": 0,
+      "chargedWeight": 1.2,
+      "forwardCharge": 50.00,
+      "rtoCharge": 85.00,
+      "codHandlingFee": 0,
+      "settlementDate": "2026-04-02T00:00:00Z"
+    },
+    {
+      "awbNumber": "AWB008MULTIPLE_DISC",
+      "settledCodAmount": 4200.00,
+      "chargedWeight": 4.5,
+      "forwardCharge": 150.00,
+      "rtoCharge": 120.00,
+      "codHandlingFee": 100.00,
+      "settlementDate": null
+    },
+    {
+      "awbNumber": "AWB009NO_ORDER",
+      "settledCodAmount": 750.00,
+      "chargedWeight": 1.0,
+      "forwardCharge": 55.00,
+      "rtoCharge": 0,
+      "codHandlingFee": 15.00,
+      "settlementDate": "2026-04-01T00:00:00Z"
+    }
+  ]
+}
