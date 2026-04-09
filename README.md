@@ -113,13 +113,13 @@ Notifications are sent to a **Pipedream** endpoint (pre-configured):
 
 1. **Seed Data:** Run `npm run seed` in the backend — creates 55 orders + 50 settlements with intentional discrepancies
 2. **Open Dashboard:** Go to http://localhost:5173
-3. **Run Reconciliation:** Click "⚡ Run Reconciliation" on the dashboard
-4. **See Results:** The dashboard shows matched/discrepancy/pending counts, courier breakdown charts
-5. **View Settlements:** Navigate to "Settlements" tab, filter by DISCREPANCY status
-6. **Click AWB Number:** Opens detailed modal showing expected vs. actual values and all flagged rules
-7. **Check Notifications:** Navigate to "Notifications" tab to see delivery status
-8. **Verify Webhook:** Check Pipedream — you'll see the notification payloads with merchant ID, AWB, and suggested actions
-9. **Upload New Batch:** Use the "Upload" tab to upload CSV or paste JSON
+3. **Upload Sample JSON:** Navigate to the "Upload" tab on the dashboard, select JSON, and paste the contents of the `sample_upload.json` file provided in the root directory (this payload contains specialized edge cases to trigger all 5 reconciliation rules).
+4. **Run Reconciliation:** Click "⚡ Run Reconciliation" on the dashboard
+5. **See Results:** The dashboard shows matched/discrepancy/pending counts, courier breakdown charts
+6. **View Settlements:** Navigate to "Settlements" tab, filter by DISCREPANCY status
+7. **Click AWB Number:** Opens detailed modal showing expected vs. actual values and all flagged rules
+8. **Check Notifications:** Navigate to "Notifications" tab to see delivery status
+9. **Verify Webhook:** Check Pipedream — you'll see the notification payloads with merchant ID, AWB, and suggested actions
 
 ---
 
