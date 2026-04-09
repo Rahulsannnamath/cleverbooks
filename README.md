@@ -1,6 +1,9 @@
 # CleverBooks — Courier Settlement Reconciliation & Alert Engine
 
 > A MERN-stack system for automated courier settlement reconciliation, discrepancy detection, and merchant notification.
+>
+> 
+> YT-demo:-https://www.youtube.com/watch?v=No_VfURT-LA   live demo:-https://cleverbooks-1.onrender.com/
 
 ![Node.js](https://img.shields.io/badge/Node.js-20+-green?logo=node.js)
 ![React](https://img.shields.io/badge/React-19-blue?logo=react)
@@ -298,10 +301,9 @@ cleverbooks/
 
 ---
 
-## 🎬 Loom Video
+## 🎬 YT demo
 
-[Insert Loom link here]
-
+https://www.youtube.com/watch?v=No_VfURT-LA
 ---
 
 **Built by Rahul Sannamath** | CleverBooks Founding Engineer Assignment
